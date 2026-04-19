@@ -1,12 +1,276 @@
 ﻿<Window x:Class="AntFarmProject.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AntFarmProject"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="🐜 Мурашина Ферма - Ant Colony Simulator" 
+        Height="900" Width="1400"
+        Background="#1e272e"
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing">
 
-    </Grid>
+	<Window.Resources>
+		<Style x:Key="ResourceIconBorder" TargetType="Border">
+			<Setter Property="Width" Value="50"/>
+			<Setter Property="Height" Value="50"/>
+			<Setter Property="CornerRadius" Value="25"/>
+			<Setter Property="Margin" Value="0,0,10,0"/>
+		</Style>
+
+		<Style x:Key="ResourceIconText" TargetType="TextBlock">
+			<Setter Property="FontSize" Value="28"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
+		<Style x:Key="ActionButtonStack" TargetType="StackPanel">
+			<Setter Property="Orientation" Value="Horizontal"/>
+		</Style>
+	</Window.Resources>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<Menu Grid.Row="0" Background="#2d3436" Foreground="#dfe6e9" FontSize="13">
+			<MenuItem Header="🎮 Гра">
+				<MenuItem Header="💾 Зберегти" Click="MenuSave_Click"/>
+				<MenuItem Header="📂 Завантажити" Click="MenuLoad_Click"/>
+				<MenuItem Header="🔄 Новий запис" Click="MenuNewSave_Click"/>
+				<Separator/>
+				<MenuItem Header="⚙️ Налаштування" Click="MenuSettings_Click"/>
+				<Separator/>
+				<MenuItem Header="❌ Вихід" Click="MenuExit_Click"/>
+			</MenuItem>
+			<MenuItem Header="📊 Статистика" Click="MenuStatistics_Click"/>
+			<MenuItem Header="🔬 Дослідження" Click="MenuResearch_Click"/>
+			<MenuItem Header="🐜 Мурахи" Click="MenuAnts_Click"/>
+			<MenuItem Header="❓ Довідка" Click="MenuHelp_Click"/>
+		</Menu>
+
+		<UniformGrid Grid.Row="1" Columns="7" Margin="10,5">
+			<Border Style="{StaticResource GamePanel}">
+				<StackPanel Style="{StaticResource ActionButtonStack}">
+					<Border Background="#00b894" Style="{StaticResource ResourceIconBorder}">
+						<TextBlock Text="🍂" Style="{StaticResource ResourceIconText}"/>
+					</Border>
+					<StackPanel>
+						<TextBlock Text="ЇЖА" Style="{StaticResource SubtitleText}"/>
+						<TextBlock x:Name="FoodText" Text="100" Style="{StaticResource ValueText}" Foreground="#00b894"/>
+						<TextBlock x:Name="FoodRateText" Text="+0/сек" FontSize="11" Foreground="#55efc4"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<Border Style="{StaticResource GamePanel}">
+				<StackPanel Style="{StaticResource ActionButtonStack}">
+					<Border Background="#e17055" Style="{StaticResource ResourceIconBorder}">
+						<TextBlock Text="🪵" Style="{StaticResource ResourceIconText}"/>
+					</Border>
+					<StackPanel>
+						<TextBlock Text="ДЕРЕВИНА" Style="{StaticResource SubtitleText}"/>
+						<TextBlock x:Name="WoodText" Text="50" Style="{StaticResource ValueText}" Foreground="#e17055"/>
+						<TextBlock x:Name="WoodRateText" Text="+0/сек" FontSize="11" Foreground="#fab1a0"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<Border Style="{StaticResource GamePanel}">
+				<StackPanel Style="{StaticResource ActionButtonStack}">
+					<Border Background="#b2bec3" Style="{StaticResource ResourceIconBorder}">
+						<TextBlock Text="🪨" Style="{StaticResource ResourceIconText}"/>
+					</Border>
+					<StackPanel>
+						<TextBlock Text="КАМІНЬ" Style="{StaticResource SubtitleText}"/>
+						<TextBlock x:Name="StoneText" Text="25" Style="{StaticResource ValueText}" Foreground="#b2bec3"/>
+						<TextBlock x:Name="StoneRateText" Text="+0/сек" FontSize="11" Foreground="#dfe6e9"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<Border Style="{StaticResource GamePanel}">
+				<StackPanel Style="{StaticResource ActionButtonStack}">
+					<Border Background="#0984e3" Style="{StaticResource ResourceIconBorder}">
+						<TextBlock Text="💧" Style="{StaticResource ResourceIconText}"/>
+					</Border>
+					<StackPanel>
+						<TextBlock Text="ВОДА" Style="{StaticResource SubtitleText}"/>
+						<TextBlock x:Name="WaterText" Text="30" Style="{StaticResource ValueText}" Foreground="#0984e3"/>
+						<TextBlock x:Name="WaterRateText" Text="+0/сек" FontSize="11" Foreground="#74b9ff"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<Border Style="{StaticResource GamePanel}">
+				<StackPanel Style="{StaticResource ActionButtonStack}">
+					<Border Background="#6c5ce7" Style="{StaticResource ResourceIconBorder}">
+						<TextBlock Text="🐜" Style="{StaticResource ResourceIconText}"/>
+					</Border>
+					<StackPanel>
+						<TextBlock Text="МУРАХИ" Style="{StaticResource SubtitleText}"/>
+						<TextBlock x:Name="AntsText" Text="0/10" Style="{StaticResource ValueText}" Foreground="#6c5ce7"/>
+						<TextBlock x:Name="AntsWorkingText" Text="0 працюють" FontSize="11" Foreground="#a29bfe"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<Border Style="{StaticResource GamePanel}">
+				<StackPanel Style="{StaticResource ActionButtonStack}">
+					<Border Background="#fdcb6e" Style="{StaticResource ResourceIconBorder}">
+						<TextBlock Text="👑" Style="{StaticResource ResourceIconText}"/>
+					</Border>
+					<StackPanel>
+						<TextBlock Text="РІВЕНЬ" Style="{StaticResource SubtitleText}"/>
+						<TextBlock x:Name="LevelText" Text="1" Style="{StaticResource ValueText}" Foreground="#fdcb6e"/>
+						<ProgressBar x:Name="LevelProgress" Value="0" Maximum="100" Height="6" Background="#636e72" Foreground="#fdcb6e"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<StackPanel Orientation="Horizontal">
+				<Border Style="{StaticResource GamePanel}" Padding="10" MinWidth="100">
+					<StackPanel>
+						<TextBlock x:Name="DayText" Text="День 1" Style="{StaticResource SubtitleText}"/>
+						<TextBlock x:Name="TimeText" Text="08:00" Style="{StaticResource ValueText}" FontSize="20"/>
+					</StackPanel>
+				</Border>
+				<Button x:Name="PauseBtn" Content="⏸" Style="{StaticResource WarningButton}" FontSize="24" Width="60" Height="60" Click="PauseBtn_Click"/>
+			</StackPanel>
+		</UniformGrid>
+
+		<Grid Grid.Row="2" Margin="10">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="300"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="350"/>
+			</Grid.ColumnDefinitions>
+
+			<Border Grid.Column="0" Style="{StaticResource GamePanel}">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel>
+						<TextBlock Text="⚡ ШВИДКІ ДІЇ" Style="{StaticResource TitleText}" Margin="0,0,0,15"/>
+
+						<Button x:Name="SpawnAntBtn" Style="{StaticResource SuccessButton}" Click="SpawnAntBtn_Click" Margin="0,0,0,10">
+							<StackPanel Style="{StaticResource ActionButtonStack}">
+								<TextBlock Text="🐜" FontSize="24" Margin="0,0,10,0"/>
+								<StackPanel>
+									<TextBlock Text="НОВА МУРАХА" FontWeight="Bold"/>
+									<TextBlock Text="10 їжі + 5 води" FontSize="11" Foreground="#b2bec3"/>
+								</StackPanel>
+							</StackPanel>
+						</Button>
+
+						<Button x:Name="ExpandNestBtn" Style="{StaticResource ActionButton}" Click="ExpandNestBtn_Click" Margin="0,0,0,10">
+							<StackPanel Style="{StaticResource ActionButtonStack}">
+								<TextBlock Text="🏗️" FontSize="24" Margin="0,0,10,0"/>
+								<StackPanel>
+									<TextBlock Text="РОЗШИРИТИ ГНІЗДО" FontWeight="Bold"/>
+									<TextBlock Text="50 дер. + 25 кам." FontSize="11" Foreground="#b2bec3"/>
+								</StackPanel>
+							</StackPanel>
+						</Button>
+
+						<Separator Background="#636e72" Margin="0,10"/>
+
+						<StackPanel>
+							<Button Style="{StaticResource GameButton}" Click="GatherFoodBtn_Click" Content="🍂 ЗБИРАТИ ЇЖУ" Margin="0,0,0,5"/>
+							<Button Style="{StaticResource GameButton}" Click="GatherWoodBtn_Click" Content="🪵 РУБАТИ ДЕРЕВО" Margin="0,0,0,5"/>
+							<Button Style="{StaticResource GameButton}" Click="GatherStoneBtn_Click" Content="🪨 ДОБУВАТИ КАМІНЬ" Margin="0,0,0,5"/>
+							<Button Style="{StaticResource GameButton}" Click="GatherWaterBtn_Click" Content="💧 ЗБИРАТИ ВОДУ" Margin="0,0,0,5"/>
+						</StackPanel>
+
+						<Separator Background="#636e72" Margin="0,10"/>
+
+						<Button Style="{StaticResource DangerButton}" Click="KillAntBtn_Click">
+							<StackPanel Style="{StaticResource ActionButtonStack}">
+								<TextBlock Text="💀" FontSize="20" Margin="0,0,10,0"/>
+								<TextBlock Text="ВБИТИ МУРАХУ" VerticalAlignment="Center"/>
+							</StackPanel>
+						</Button>
+					</StackPanel>
+				</ScrollViewer>
+			</Border>
+
+			<Border Grid.Column="1" Style="{StaticResource GamePanel}" Background="#0a0f14">
+				<Grid>
+					<Border Background="#2d3436" CornerRadius="8" Padding="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+						<TextBlock x:Name="CoordsText" Text="📍 X: 0 | Y: 0" Foreground="#b2bec3" FontFamily="Consolas"/>
+					</Border>
+
+					<Button x:Name="SpeedBtn" Content="▶ x1" Style="{StaticResource GameButton}" Click="SpeedBtn_Click" 
+                            HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Padding="10,5"/>
+
+					<Canvas x:Name="GameCanvas" Margin="0,50,0,10" ClipToBounds="True">
+						<Grid x:Name="NestGrid" Canvas.Left="350" Canvas.Top="200">
+							<Ellipse Width="150" Height="150" Fill="#2d3436" Stroke="#fdcb6e" StrokeThickness="4">
+								<Ellipse.Effect>
+									<DropShadowEffect Color="#fdcb6e" BlurRadius="20" ShadowDepth="0" Opacity="0.4"/>
+								</Ellipse.Effect>
+							</Ellipse>
+							<TextBlock Text="🏰" FontSize="72" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							<Border Background="#fdcb6e" CornerRadius="12" Padding="8,4" VerticalAlignment="Bottom" Margin="0,0,0,10">
+								<TextBlock x:Name="NestLevelText" Text="РІВЕНЬ 1" Foreground="#2d3436" FontWeight="Bold"/>
+							</Border>
+						</Grid>
+					</Canvas>
+				</Grid>
+			</Border>
+
+			<Grid Grid.Column="2">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+
+				<Border Grid.Row="0" Style="{StaticResource GamePanel}" Margin="0,0,0,10">
+					<StackPanel>
+						<TextBlock Text="📊 СТАТИСТИКА" Style="{StaticResource TitleText}" Margin="0,0,0,10"/>
+						<UniformGrid Columns="2">
+							<StackPanel>
+								<TextBlock Text="🍂" Foreground="#00b894" x:Name="TotalFoodText"/>
+								<TextBlock Text="🪵" Foreground="#e17055" x:Name="TotalWoodText"/>
+								<TextBlock Text="🪨" Foreground="#b2bec3" x:Name="TotalStoneText"/>
+								<TextBlock Text="💧" Foreground="#0984e3" x:Name="TotalWaterText"/>
+							</StackPanel>
+							<StackPanel>
+								<TextBlock x:Name="AntsBornText" Text="🐣 0" FontSize="12"/>
+								<TextBlock x:Name="AntsDiedText" Text="💀 0" FontSize="12"/>
+								<TextBlock x:Name="NestExpansionsText" Text="🏗️ 0" FontSize="12"/>
+							</StackPanel>
+						</UniformGrid>
+					</StackPanel>
+				</Border>
+
+				<Border Grid.Row="1" Style="{StaticResource GamePanel}">
+					<DockPanel>
+						<TextBlock DockPanel.Dock="Top" Text="📋 ЖУРНАЛ ПОДІЙ" Style="{StaticResource TitleText}" Margin="0,0,0,10"/>
+						<ScrollViewer VerticalScrollBarVisibility="Auto">
+							<StackPanel x:Name="EventLog"/>
+						</ScrollViewer>
+					</DockPanel>
+				</Border>
+			</Grid>
+		</Grid>
+
+		<Border Grid.Row="3" Background="#2d3436" BorderBrush="#636e72" BorderThickness="0,2,0,0" Padding="10">
+			<DockPanel>
+				<TextBlock x:Name="StatusText" Text="✅ Гра запущена" Foreground="#00b894" VerticalAlignment="Center"/>
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+					<Button Content="💾 Швидке збереження" Style="{StaticResource GameButton}" Click="QuickSaveBtn_Click" Margin="0,0,10,0"/>
+					<TextBlock Text="v2.0" Foreground="#636e72" VerticalAlignment="Center" FontSize="11"/>
+				</StackPanel>
+			</DockPanel>
+		</Border>
+		<Border x:Name="NotificationPanel" Grid.Row="1" Grid.RowSpan="2" Panel.ZIndex="100"
+                Background="#2d3436" BorderBrush="#00b894" BorderThickness="3"
+                CornerRadius="12" Padding="20" Visibility="Collapsed"
+                HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock x:Name="NotificationIcon" Text="✅" FontSize="36" Foreground="#00b894" Margin="0,0,15,0"/>
+				<TextBlock x:Name="NotificationText" Text="" Style="{StaticResource TitleText}" VerticalAlignment="Center"/>
+			</StackPanel>
+		</Border>
+	</Grid>
 </Window>
