@@ -1,0 +1,40 @@
+﻿<Window x:Class="AntFarmProject.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Довідка" Height="350" Width="400"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None" 
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize">
+
+	<Border Background="#2d3436" CornerRadius="15" BorderBrush="#fdcb6e" BorderThickness="2">
+		<Grid Margin="20">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+				<TextBlock Text="🐜" FontSize="28" Margin="0,0,10,0"/>
+				<TextBlock Text="МУРАШИНА ФЕРМА v2.0" Foreground="White" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+			</StackPanel>
+
+			<StackPanel Grid.Row="1" VerticalAlignment="Center">
+				<TextBlock Text="Керування:" Foreground="#fdcb6e" FontWeight="Bold" Margin="0,0,0,5"/>
+				<TextBlock Text="• Клік на мураху: деталі" Foreground="#dfe6e9" Margin="0,0,0,3"/>
+				<TextBlock Text="• Кнопки: управління колонією" Foreground="#dfe6e9" Margin="0,0,0,3"/>
+				<TextBlock Text="• Меню: збереження/завантаження" Foreground="#dfe6e9" Margin="0,0,0,10"/>
+
+				<TextBlock Text="Поради:" Foreground="#fdcb6e" FontWeight="Bold" Margin="0,0,0,5"/>
+				<TextBlock Text="• Слідкуйте за їжею та водою" Foreground="#dfe6e9" Margin="0,0,0,3"/>
+				<TextBlock Text="• Розширюйте гніздо для нових мурах" Foreground="#dfe6e9" Margin="0,0,0,3"/>
+			</StackPanel>
+
+			<Button Grid.Row="2" Content="Зрозуміло" Click="CloseButton_Click" 
+                    Background="#fdcb6e" Foreground="#2d3436" FontWeight="Bold" 
+                    Height="40" Margin="0,20,0,0" Cursor="Hand"/>
+		</Grid>
+	</Border>
+</Window>

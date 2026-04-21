@@ -11,12 +11,12 @@ using System.Windows.Threading;
 using Path = System.Windows.Shapes.Path;
 namespace AntFarmProject
 {
-	// ===== ENUMS =====
+	
 	public enum AntState { Idle, Moving, Gathering, Returning, Resting, Dead }
 	public enum ResourceType { Food, Wood, Stone, Water }
 	public enum WeatherType { Sunny, Rainy, Stormy, Night }
 
-	// ===== MODELS =====
+	
 	public class Ant
 	{
 		public int Id { get; set; }
@@ -80,27 +80,27 @@ namespace AntFarmProject
 		public int DaysSurvived { get; set; } = 1;
 	}
 
-	// ===== SAVE DATA =====
+	
 	public class SaveData
 	{
 		public string Version { get; set; } = "2.0";
 		public DateTime SaveDate { get; set; }
 		public string SaveName { get; set; }
 
-		// Resources
+		
 		public int Food { get; set; }
 		public int Wood { get; set; }
 		public int Stone { get; set; }
 		public int Water { get; set; }
 
-		// Colony
+		
 		public int ColonyLevel { get; set; }
 		public int MaxAnts { get; set; }
 		public double NestX { get; set; }
 		public double NestY { get; set; }
 		public int NestSize { get; set; }
 
-		// Game state
+		
 		public int CurrentDay { get; set; }
 		public int CurrentHour { get; set; }
 		public int CurrentMinute { get; set; }
@@ -108,11 +108,11 @@ namespace AntFarmProject
 		public bool IsPaused { get; set; }
 		public int GameSpeed { get; set; }
 
-		// Lists
+		
 		public List<AntSaveData> Ants { get; set; }
 		public List<ResourceSaveData> Resources { get; set; }
 
-		// Statistics
+		
 		public GameStatistics Statistics { get; set; }
 	}
 
@@ -128,7 +128,7 @@ namespace AntFarmProject
 		public double Health { get; set; }
 		public double Age { get; set; }
 		public int GatheredFood { get; set; }
-		public int GatheredWood { get; set; }
+		public int GatheredWood { get; set; } 
 		public int GatheredStone { get; set; }
 		public int GatheredWater { get; set; }
 	}
@@ -142,44 +142,45 @@ namespace AntFarmProject
 		public int Amount { get; set; }
 	}
 
-	// ===== MAIN WINDOW =====
+	
 	public partial class MainWindow : Window
 	{
-		// Resources
+		
 		private int food = 100;
 		private int wood = 50;
 		private int stone = 25;
 		private int water = 30;
 
-		// Colony
+		
 		private int colonyLevel = 1;
 		private int maxAnts = 10;
 		private double nestX = 425;
 		private double nestY = 275;
 		private int nestSize = 150;
 
-		// Game objects
+		
 		private List<Ant> ants = new();
 		private List<ResourceNode> resources = new();
 		private GameStatistics statistics = new();
 
-		// Time
+		
 		private int currentDay = 1;
 		private int currentHour = 8;
 		private int currentMinute = 0;
 		private WeatherType currentWeather = WeatherType.Sunny;
 
-		// Settings
+	
 		private bool isPaused = false;
 		private int gameSpeed = 1;
 		private string currentSaveFile = "savegame.json";
 
-		// Timers
+		
 		private DispatcherTimer gameTimer;
 		private DispatcherTimer secondTimer;
 		private DispatcherTimer autoSaveTimer;
 		private Random random = new();
 		private DateTime sessionStart;
+		private bool isDarkTheme = false;
 
 		public MainWindow()
 		{
@@ -209,26 +210,25 @@ namespace AntFarmProject
 
 		private void NewGame()
 		{
-			// Reset all
+			
 			food = 100; wood = 50; stone = 25; water = 30;
 			colonyLevel = 1; maxAnts = 10;
 			currentDay = 1; currentHour = 8; currentMinute = 0;
 			statistics = new GameStatistics();
 
-			// Clear canvas
 			ants.Clear();
 			resources.Clear();
 			GameCanvas.Children.Clear();
 			GameCanvas.Children.Add(NestGrid);
 
-			// Create initial ants
+			
 			for (int i = 0; i < 3; i++)
 				SpawnAnt(false);
 
-			// Generate resources
+			
 			GenerateResources();
 
-			// Setup timers
+			
 			SetupTimers();
 
 			UpdateUI();
@@ -237,17 +237,17 @@ namespace AntFarmProject
 
 		private void SetupTimers()
 		{
-			// Main game loop (60 FPS)
+			
 			gameTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
 			gameTimer.Tick += GameLoop;
 			gameTimer.Start();
 
-			// Second timer (time, weather, auto-save check)
+		
 			secondTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
 			secondTimer.Tick += SecondTick;
 			secondTimer.Start();
 
-			// Auto-save every 2 minutes
+			
 			autoSaveTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(2) };
 			autoSaveTimer.Tick += (s, e) => AutoSave();
 			autoSaveTimer.Start();
@@ -257,7 +257,7 @@ namespace AntFarmProject
 		{
 			if (isPaused) return;
 
-			// Update time
+			
 			currentMinute++;
 			if (currentMinute >= 60)
 			{
@@ -273,14 +273,14 @@ namespace AntFarmProject
 				}
 			}
 
-			// Resource consumption
+			
 			int foodConsumption = (ants.Count / 3) + 1;
 			int waterConsumption = (ants.Count / 4) + 1;
 
 			food = Math.Max(0, food - foodConsumption);
 			water = Math.Max(0, water - waterConsumption);
 
-			// Check for starving ants
+			
 			if (food == 0)
 			{
 				var starving = ants.Where(a => a.State != AntState.Dead).ToList();
@@ -291,7 +291,7 @@ namespace AntFarmProject
 				}
 			}
 
-			// Aging
+			
 			foreach (var ant in ants.Where(a => a.State != AntState.Dead))
 			{
 				ant.Age += 0.1;
@@ -299,7 +299,7 @@ namespace AntFarmProject
 					KillAnt(ant, "старість");
 			}
 
-			// Random events
+			
 			if (random.Next(100) < 5)
 			{
 				int bonus = random.Next(10, 30);
@@ -331,20 +331,18 @@ namespace AntFarmProject
 		{
 			int id = 1;
 
-			// Food (more in sunny weather)
+			
 			int foodCount = currentWeather == WeatherType.Sunny ? 12 : 8;
 			for (int i = 0; i < foodCount; i++)
 				CreateResource(id++, ResourceType.Food, "🍂", "#00b894");
 
-			// Wood
 			for (int i = 0; i < 6; i++)
 				CreateResource(id++, ResourceType.Wood, "🪵", "#e17055");
 
-			// Stone
 			for (int i = 0; i < 4; i++)
 				CreateResource(id++, ResourceType.Stone, "🪨", "#b2bec3");
 
-			// Water (more in rainy weather)
+		
 			int waterCount = currentWeather == WeatherType.Rainy ? 6 : 3;
 			for (int i = 0; i < waterCount; i++)
 				CreateResource(id++, ResourceType.Water, "💧", "#0984e3");
@@ -432,7 +430,7 @@ namespace AntFarmProject
 		{
 			var canvas = new Canvas { Width = 32, Height = 32 };
 
-			// Тінь
+			
 			var shadow = new Ellipse
 			{
 				Width = 22,
@@ -442,7 +440,6 @@ namespace AntFarmProject
 			Canvas.SetLeft(shadow, 5);
 			Canvas.SetTop(shadow, 24);
 
-			// Ноги - чорні, тонкі
 			var legBrush = new SolidColorBrush(Color.FromRgb(20, 15, 12));
 			var legs = new[]
 			{
@@ -460,7 +457,7 @@ namespace AntFarmProject
 				leg.StrokeEndLineCap = PenLineCap.Round;
 			}
 
-			// Черевце - велике, чорне з блиском
+			
 			var abdomen = new Ellipse
 			{
 				Width = 15,
@@ -478,7 +475,7 @@ namespace AntFarmProject
 			Canvas.SetLeft(abdomen, 8.5);
 			Canvas.SetTop(abdomen, 11);
 
-			// Груди
+		
 			var thorax = new Ellipse
 			{
 				Width = 11,
@@ -495,7 +492,6 @@ namespace AntFarmProject
 			Canvas.SetLeft(thorax, 10.5);
 			Canvas.SetTop(thorax, 3);
 
-			// Голова
 			var head = new Ellipse
 			{
 				Width = 11,
@@ -512,7 +508,7 @@ namespace AntFarmProject
 			Canvas.SetLeft(head, 10.5);
 			Canvas.SetTop(head, -6);
 
-			// Вусики
+			
 			var antennaBrush = new SolidColorBrush(Color.FromRgb(40, 35, 30));
 			var leftAntenna = new Path
 			{
@@ -529,7 +525,7 @@ namespace AntFarmProject
 				StrokeStartLineCap = PenLineCap.Round
 			};
 
-			// Очі - блискучі
+			
 			var eyeBrush = new SolidColorBrush(Color.FromRgb(90, 85, 80));
 			var leftEye = new Ellipse { Width = 2.5, Height = 3.5, Fill = eyeBrush };
 			Canvas.SetLeft(leftEye, 12);
@@ -538,7 +534,7 @@ namespace AntFarmProject
 			Canvas.SetLeft(rightEye, 17.5);
 			Canvas.SetTop(rightEye, -4);
 
-			// Блиск в очах
+			
 			var shine = new SolidColorBrush(Colors.White);
 			var leftShine = new Ellipse { Width = 1, Height = 1.5, Fill = shine };
 			Canvas.SetLeft(leftShine, 12.5);
@@ -547,7 +543,7 @@ namespace AntFarmProject
 			Canvas.SetLeft(rightShine, 18);
 			Canvas.SetTop(rightShine, -3.5);
 
-			// Збірка
+			
 			canvas.Children.Add(shadow);
 			foreach (var leg in legs) canvas.Children.Add(leg);
 			canvas.Children.Add(abdomen);
@@ -560,7 +556,7 @@ namespace AntFarmProject
 			canvas.Children.Add(leftShine);
 			canvas.Children.Add(rightShine);
 
-			// Tooltip
+			
 			canvas.ToolTip = "Клікніть для деталей";
 
 			return canvas;
@@ -601,7 +597,7 @@ namespace AntFarmProject
 					break;
 			}
 
-			// Energy drain
+			
 			if (ant.State != AntState.Idle && ant.State != AntState.Resting)
 				ant.Energy -= 0.05;
 
@@ -617,7 +613,7 @@ namespace AntFarmProject
 		{
 			var available = resources.Where(r => !r.IsDepleted).ToList();
 
-			// Prioritize by need
+			
 			ResourceType? priority = null;
 			if (food < 50) priority = ResourceType.Food;
 			else if (water < 20) priority = ResourceType.Water;
@@ -638,7 +634,7 @@ namespace AntFarmProject
 			}
 			else
 			{
-				// Explore
+				
 				ant.TargetX = random.Next(100, 750);
 				ant.TargetY = random.Next(100, 550);
 				ant.State = AntState.Moving;
@@ -659,7 +655,7 @@ namespace AntFarmProject
 			double dy = ant.TargetY - ant.Y;
 			double dist = Math.Sqrt(dx * dx + dy * dy);
 
-			// Weather effects
+			
 			double speedMultiplier = currentWeather switch
 			{
 				WeatherType.Rainy => 0.8,
@@ -701,7 +697,7 @@ namespace AntFarmProject
 			ant.CarryingAmount = amount;
 			ant.CarryingType = ant.TargetResource.Type;
 
-			// Update statistics
+			
 			switch (ant.CarryingType)
 			{
 				case ResourceType.Food: ant.GatheredFood += amount; break;
@@ -715,7 +711,7 @@ namespace AntFarmProject
 				GameCanvas.Children.Remove(ant.TargetResource.Visual);
 				resources.Remove(ant.TargetResource);
 
-				// Respawn after delay
+				
 				var type = ant.CarryingType.Value;
 				string[] info = type switch
 				{
@@ -744,7 +740,7 @@ namespace AntFarmProject
 
 			if (dist < 25)
 			{
-				// Deposit
+				
 				switch (ant.CarryingType)
 				{
 					case ResourceType.Food:
@@ -797,7 +793,7 @@ namespace AntFarmProject
 			statistics.AntsDied++;
 			AddLog($"💀 {ant.Name} померла ({reason})", Colors.Red);
 
-			// Remove after delay
+			
 			DispatcherTimer removeTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
 			removeTimer.Tick += (s, e) =>
 			{
@@ -815,7 +811,7 @@ namespace AntFarmProject
 			Canvas.SetLeft(ant.Visual, ant.X - 16);
 			Canvas.SetTop(ant.Visual, ant.Y - 16);
 
-			// Rotation
+			
 			double dx = ant.TargetX - ant.X;
 			double dy = ant.TargetY - ant.Y;
 			double angle = Math.Atan2(dy, dx) * 180 / Math.PI + 90;
@@ -826,7 +822,7 @@ namespace AntFarmProject
 			while (diff < -180) diff += 360;
 			ant.RotateTransform.Angle = current + diff * 0.1;
 
-			// Visual feedback for low energy
+			
 			if (ant.Energy < 20)
 				ant.Visual.Opacity = 0.7;
 			else
@@ -835,36 +831,33 @@ namespace AntFarmProject
 
 		private void UpdateUI()
 		{
-			// Resources
-			FoodText.Text = food.ToString();
-			WoodText.Text = wood.ToString();
+			
 			StoneText.Text = stone.ToString();
 			WaterText.Text = water.ToString();
 
-			// Rates
+			
 			int foodRate = ants.Count(a => a.State != AntState.Dead) / 3;
 			FoodRateText.Text = $"+{foodRate}/сек";
 			WoodRateText.Text = $"+{ants.Count / 4}/сек";
 			StoneRateText.Text = $"+{ants.Count / 6}/сек";
 			WaterRateText.Text = $"+{ants.Count / 5}/сек";
 
-			// Ants
+		
 			int alive = ants.Count(a => a.State != AntState.Dead);
 			int working = ants.Count(a => a.State == AntState.Moving || a.State == AntState.Gathering);
 			AntsText.Text = $"{alive}/{maxAnts}";
 			AntsWorkingText.Text = $"{working} працюють";
 
-			// Level
+			
 			LevelText.Text = colonyLevel.ToString();
 			int expNeeded = colonyLevel * 100;
 			int currentExp = (food / 10) + (wood / 5) + (stone / 3);
 			LevelProgress.Value = Math.Min(100, (currentExp * 100) / expNeeded);
 
-			// Time
 			DayText.Text = $"День {currentDay}";
 			TimeText.Text = $"{currentHour:D2}:{currentMinute:D2}";
 
-			// Statistics
+			
 			TotalFoodText.Text = $"🍂 {statistics.TotalFoodCollected}";
 			TotalWoodText.Text = $"🪵 {statistics.TotalWoodCollected}";
 			TotalStoneText.Text = $"🪨 {statistics.TotalStoneCollected}";
@@ -873,11 +866,11 @@ namespace AntFarmProject
 			AntsDiedText.Text = $"💀 {statistics.AntsDied} померло";
 			NestExpansionsText.Text = $"🏗️ {statistics.NestExpansions} розширень";
 
-			// Buttons
+			
 			SpawnAntBtn.IsEnabled = food >= 10 && water >= 5 && alive < maxAnts;
 			ExpandNestBtn.IsEnabled = wood >= 50 && stone >= 25;
 
-			// Coords
+			
 			if (ants.Any())
 			{
 				var first = ants.First();
@@ -906,7 +899,7 @@ namespace AntFarmProject
 			border.Child = text;
 			EventLog.Children.Insert(0, border);
 
-			// Limit log size
+			
 			if (EventLog.Children.Count > 50)
 				EventLog.Children.RemoveAt(50);
 		}
@@ -932,7 +925,7 @@ namespace AntFarmProject
 			window.ShowDialog();
 		}
 
-		// ===== SAVE / LOAD =====
+		
 		public void SaveGame(string filename = null)
 		{
 			string path = filename ?? currentSaveFile;
@@ -994,7 +987,7 @@ namespace AntFarmProject
 			string json = JsonSerializer.Serialize(data, options);
 			File.WriteAllText(path, json);
 
-			// Backup
+		
 			string backupPath = $"Data/backups/{System.IO.Path.GetFileNameWithoutExtension(path)}_{DateTime.Now:yyyyMMdd_HHmmss}.json";
 			File.WriteAllText(backupPath, json);
 
@@ -1010,7 +1003,7 @@ namespace AntFarmProject
 			var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 			var data = JsonSerializer.Deserialize<SaveData>(json, options);
 
-			// Restore state
+			
 			food = data.Food;
 			wood = data.Wood;
 			stone = data.Stone;
@@ -1028,7 +1021,7 @@ namespace AntFarmProject
 			gameSpeed = data.GameSpeed;
 			statistics = data.Statistics ?? new GameStatistics();
 			currentSaveFile = System.IO.Path.GetFileName(filename);
-			// Clear and restore
+			
 			ants.Clear();
 			resources.Clear();
 			GameCanvas.Children.Clear();
@@ -1036,8 +1029,7 @@ namespace AntFarmProject
 			Canvas.SetLeft(NestGrid, nestX - 75);
 			Canvas.SetTop(NestGrid, nestY - 75);
 
-			// Restore ants
-			foreach (var a in data.Ants)
+		foreach (var a in data.Ants)
 			{
 				var ant = new Ant(a.Id, a.X, a.Y)
 				{
@@ -1065,7 +1057,7 @@ namespace AntFarmProject
 				ants.Add(ant);
 			}
 
-			// Restore resources
+			
 			foreach (var r in data.Resources)
 			{
 				var type = Enum.Parse<ResourceType>(r.Type);
@@ -1123,7 +1115,7 @@ namespace AntFarmProject
 			StatusText.Text = $"✅ Автозбереження: {DateTime.Now:HH:mm:ss}";
 		}
 
-		// ===== BUTTON HANDLERS =====
+		
 		private void SpawnAntBtn_Click(object sender, RoutedEventArgs e)
 		{
 			if (food >= 10 && water >= 5)
@@ -1146,7 +1138,7 @@ namespace AntFarmProject
 				nestSize += 20;
 				statistics.NestExpansions++;
 
-				// Visual update
+				
 				var nest = NestGrid.Children[0] as Ellipse;
 				nest.Width = nestSize;
 				nest.Height = nestSize;
@@ -1219,7 +1211,6 @@ namespace AntFarmProject
 
 		private void QuickSaveBtn_Click(object sender, RoutedEventArgs e) => SaveGame();
 
-		// ===== MENU HANDLERS =====
 		private void MenuSave_Click(object sender, RoutedEventArgs e)
 		{
 			var window = new SaveLoadWindow(this, true);
@@ -1243,7 +1234,7 @@ namespace AntFarmProject
 
 		private void MenuSettings_Click(object sender, RoutedEventArgs e)
 		{
-			// Settings window
+			
 		}
 
 		private void MenuExit_Click(object sender, RoutedEventArgs e)
@@ -1265,21 +1256,92 @@ namespace AntFarmProject
 
 		private void MenuAnts_Click(object sender, RoutedEventArgs e)
 		{
-			// Show ant management
+			
 		}
 
 		private void MenuHelp_Click(object sender, RoutedEventArgs e)
+
 		{
-			MessageBox.Show("🐜 Мурашина Ферма v2.0\n\n" +
-				"Керування:\n" +
-				"- Клік на мураху: деталі\n" +
-				"- Кнопки: управління колонією\n" +
-				"- Меню: збереження/завантаження\n\n" +
-				"Поради:\n" +
-				"- Слідкуйте за їжею та водою\n" +
-				"- Розширюйте гніздо для більше мурах\n" +
-				"- Використовуйте погоду для планування",
-				"Довідка", MessageBoxButton.OK, MessageBoxImage.Information);
+			HelpWindow help = new HelpWindow();
+			help.ShowDialog();
+		}
+
+		private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
+		{
+			isDarkTheme = !isDarkTheme;
+
+			
+			Color windowBg, panelBg, textColor, canvasBg, buttonBg, menuBg;
+
+			if (isDarkTheme)
+			{
+				windowBg = Color.FromRgb(30, 30, 30);
+				panelBg = Color.FromRgb(45, 52, 54);
+				textColor = Color.FromRgb(223, 230, 233);
+				canvasBg = Color.FromRgb(10, 15, 20);
+				buttonBg = Color.FromRgb(99, 110, 114);
+				menuBg = Color.FromRgb(45, 52, 54);
+			}
+			else
+			{
+				
+				windowBg = Color.FromRgb(245, 246, 250);
+				panelBg = Color.FromRgb(255, 255, 255);
+				textColor = Color.FromRgb(45, 52, 54);
+				canvasBg = Color.FromRgb(232, 232, 232);
+				buttonBg = Color.FromRgb(178, 190, 195);
+				menuBg = Color.FromRgb(220, 220, 220);
+			}
+
+			
+			this.Background = new SolidColorBrush(windowBg);
+
+			var gamePanel = GameCanvas.Parent as Border;
+			if (gamePanel != null)
+				gamePanel.Background = new SolidColorBrush(canvasBg);
+
+			
+			foreach (var border in FindVisualChildren<Border>(this))
+			{
+				if (border.Name == "NestGrid" || border.Tag != null)
+					continue;
+
+				border.Background = new SolidColorBrush(panelBg);
+				border.BorderBrush = new SolidColorBrush(isDarkTheme ? Color.FromRgb(99, 110, 114) : Color.FromRgb(178, 190, 195));
+			}
+
+			
+			foreach (var textBlock in FindVisualChildren<TextBlock>(this))
+			{
+				
+				if (textBlock.Name == "NotificationIcon" || textBlock.Name == "NestLevelText")
+					continue;
+
+				textBlock.Foreground = new SolidColorBrush(textColor);
+			}
+
+			
+			var menu = FindVisualChildren<Menu>(this).FirstOrDefault();
+			if (menu != null)
+			{
+				menu.Background = new SolidColorBrush(menuBg);
+				menu.Foreground = new SolidColorBrush(textColor);
+			}
+
+			
+			foreach (var button in FindVisualChildren<Button>(this))
+			{
+				if (button.Name == "SpawnAntBtn" || button.Name == "ExpandNestBtn" ||
+					button.Name == "KillAntBtn" || button.Name == "ThemeButton")
+					continue; 
+
+				button.Background = new SolidColorBrush(buttonBg);
+				button.Foreground = new SolidColorBrush(textColor);
+			}
+
+			ThemeButton.Content = isDarkTheme ? "☀️" : "🌓";
+
+			AddLog(isDarkTheme ? "🌙 Темна тема увімкнена" : "☀️ Світла тема увімкнена", Colors.Gold);
 		}
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1296,5 +1358,22 @@ namespace AntFarmProject
 				e.Cancel = true;
 			}
 		}
+
+			
+private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+		{
+			if (depObj != null)
+			{
+				for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+				{
+					DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+					if (child != null && child is T)
+						yield return (T)child;
+
+					foreach (T childOfChild in FindVisualChildren<T>(child))
+						yield return childOfChild;
+				}
+			}
+		}
 	}
-}
+	}
