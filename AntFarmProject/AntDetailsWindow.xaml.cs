@@ -1,11 +1,19 @@
 ﻿using System.Windows;
-
+using AntFarmProject.Models;
 namespace AntFarmProject
 {
+	/// <summary>
+	/// Вікно деталей мурахи.
+	/// Відображає основну інформацію про конкретну мураху,
+	/// включаючи її стан, характеристики та зібрані ресурси.
+	/// </summary>
 	public partial class AntDetailsWindow : Window
 	{
 		private Ant ant;
 
+		/// <summary>
+		/// Створює нове вікно деталей мурахи та ініціалізує відображення даних.
+		/// </summary>
 		public AntDetailsWindow(Ant ant)
 		{
 			InitializeComponent();
@@ -13,6 +21,10 @@ namespace AntFarmProject
 			UpdateDisplay();
 		}
 
+		/// <summary>
+		/// Оновлює UI елементи відповідно до поточного стану мурахи.
+		/// Відображає ім'я, стан, енергію, здоров'я, вік та зібрані ресурси.
+		/// </summary>
 		private void UpdateDisplay()
 		{
 			AntNameTitle.Text = ant.Name;
@@ -27,6 +39,10 @@ namespace AntFarmProject
 			WaterGatheredText.Text = $"💧 {ant.GatheredWater}";
 		}
 
+		/// <summary>
+		/// Обробник кнопки закриття вікна.
+		/// Закриває поточне вікно деталей мурахи.
+		/// </summary>
 		private void CloseBtn_Click(object sender, RoutedEventArgs e)
 		{
 			Close();

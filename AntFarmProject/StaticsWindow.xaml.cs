@@ -1,11 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-
+using AntFarmProject.Models;
 namespace AntFarmProject
 {
+	/// <summary>
+	/// Вікно статистики гри.
+	/// Відображає загальні показники прогресу колонії мурах.
+	/// </summary>
 	public partial class StatisticsWindow : Window
 	{
+		/// <summary>
+		/// Ініціалізує вікно статистики та заповнює UI даними.
+		/// </summary>
 		public StatisticsWindow(GameStatistics stats, List<Ant> ants)
 		{
 			InitializeComponent();
@@ -26,6 +33,10 @@ namespace AntFarmProject
 			PlayTimeStat.Text = $"Загальний час: {stats.PlayTime:hh\\:mm\\:ss}";
 		}
 
+		/// <summary>
+		/// Обробник кнопки закриття вікна статистики.
+		/// Закриває поточне вікно.
+		/// </summary>
 		private void CloseBtn_Click(object sender, RoutedEventArgs e)
 		{
 			Close();

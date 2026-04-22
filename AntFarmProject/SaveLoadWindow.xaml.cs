@@ -4,22 +4,40 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-
+using AntFarmProject.Models;
 namespace AntFarmProject
 {
+	/// <summary>
+	/// Інформація про збереження гри.
+	/// Використовується для відображення списку сейвів у SaveLoadWindow.
+	/// </summary>
 	public class SaveInfo
 	{
+		/// <summary>Назва збереження.</summary>
 		public string Name { get; set; }
+
+		/// <summary>Дата створення або останнього збереження.</summary>
 		public string Date { get; set; }
+
+		/// <summary>Короткий опис стану гри у цьому збереженні.</summary>
 		public string Info { get; set; }
+
+		/// <summary>Шлях до файлу збереження.</summary>
 		public string FilePath { get; set; }
 	}
 
+	/// <summary>
+	/// Вікно збереження та завантаження гри.
+	/// Дозволяє користувачу керувати слотами збережень та резервними копіями.
+	/// </summary>
 	public partial class SaveLoadWindow : Window
 	{
 		private MainWindow mainWindow;
 		private bool isSaveMode;
 
+		/// <summary>
+		/// Ініціалізує вікно Save/Load режиму.
+		/// </summary>
 		public SaveLoadWindow(MainWindow main, bool saveMode)
 		{
 			InitializeComponent();
@@ -32,17 +50,19 @@ namespace AntFarmProject
 			LoadSaveList();
 		}
 
+		/// <summary>
+		/// Завантажує список доступних збережень (слоти, автосейв, бекапи).
+		/// </summary>
 		private void LoadSaveList()
 		{
 			var saves = new List<SaveInfo>();
 
-			// Auto-save
 			if (File.Exists("Data/savegame.json"))
 			{
 				saves.Add(GetSaveInfo("Data/savegame.json", "🔄 Автозбереження"));
 			}
 
-			// Slots
+			
 			for (int i = 1; i <= 3; i++)
 			{
 				string path = $"Data/savegame_{i}.json";
@@ -62,7 +82,6 @@ namespace AntFarmProject
 				}
 			}
 
-			// Backups
 			var backups = Directory.GetFiles("Data/backups", "*.json")
 				.OrderByDescending(f => File.GetCreationTime(f))
 				.Take(5);
@@ -75,6 +94,9 @@ namespace AntFarmProject
 			SaveList.ItemsSource = saves;
 		}
 
+		/// <summary>
+		/// Створює об'єкт SaveInfo на основі файлу збереження.
+		/// </summary>
 		private SaveInfo GetSaveInfo(string path, string defaultName)
 		{
 			try
@@ -102,13 +124,15 @@ namespace AntFarmProject
 			}
 		}
 
+		/// <summary>
+		/// Обробник кнопки виконання дії (збереження або завантаження).
+		/// </summary>
 		private void ActionBtn_Click(object sender, RoutedEventArgs e)
 		{
 			if (SaveList.SelectedItem is SaveInfo save)
 			{
 				if (isSaveMode)
 				{
-					// Generate new filename for empty slot
 					string filename = save.FilePath;
 					if (save.Name.Contains("порожній"))
 					{
@@ -128,6 +152,9 @@ namespace AntFarmProject
 			}
 		}
 
+		/// <summary>
+		/// Видаляє вибране збереження після підтвердження користувача.
+		/// </summary>
 		private void DeleteSave_Click(object sender, RoutedEventArgs e)
 		{
 			if (sender is Button btn && btn.Tag is string path)
@@ -141,6 +168,9 @@ namespace AntFarmProject
 			}
 		}
 
+		/// <summary>
+		/// Закриває вікно без виконання дій.
+		/// </summary>
 		private void CancelBtn_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
