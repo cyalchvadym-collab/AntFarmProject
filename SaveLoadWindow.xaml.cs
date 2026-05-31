@@ -108,8 +108,8 @@ namespace AntFarmProject
 				{
 					Name = data.SaveName ?? defaultName,
 					Date = $"📅 {data.SaveDate:dd.MM.yyyy HH:mm}",
-                    Info = $"🐜 {(data.Ants != null ? data.Ants.Count() : 0)} мурах | ⛺ Рівень {data.ColonyLevel} | День {data.CurrentDay}",
-                    FilePath = path
+					Info = $"🐜 {data.Ants?.Length ?? 0} мурах | 🏰 Рівень {data.ColonyLevel} | День {data.CurrentDay}",
+					FilePath = path
 				};
 			}
 			catch

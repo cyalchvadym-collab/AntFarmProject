@@ -1,0 +1,255 @@
+{
+  "Version": "2.0",
+  "SaveDate": "2026-04-20T12:42:26.7165723+03:00",
+  "SaveName": "savegame",
+  "Food": 198,
+  "Wood": 381,
+  "Stone": 397,
+  "Water": 26,
+  "ColonyLevel": 1,
+  "MaxAnts": 10,
+  "NestX": 425,
+  "NestY": 275,
+  "NestSize": 150,
+  "CurrentDay": 1,
+  "CurrentHour": 12,
+  "CurrentMinute": 46,
+  "Weather": 0,
+  "IsPaused": false,
+  "GameSpeed": 1,
+  "Ants": [
+    {
+      "Id": 1,
+      "Name": "\u041C\u0443\u0440\u0430\u0445\u0430 #1",
+      "X": 249.41930157851766,
+      "Y": 185.91712028173552,
+      "Speed": 2.1289562452453703,
+      "State": "Moving",
+      "Energy": 95.90000000000023,
+      "Health": 100,
+      "Age": 28.600000000000136,
+      "GatheredFood": 48,
+      "GatheredWood": 180,
+      "GatheredStone": 72,
+      "GatheredWater": 104
+    },
+    {
+      "Id": 2,
+      "Name": "\u041C\u0443\u0440\u0430\u0445\u0430 #2",
+      "X": 405.64190883385,
+      "Y": 265.2034414807864,
+      "Speed": 3.1404607304401972,
+      "State": "Idle",
+      "Energy": 100,
+      "Health": 100,
+      "Age": 28.600000000000136,
+      "GatheredFood": 172,
+      "GatheredWood": 88,
+      "GatheredStone": 168,
+      "GatheredWater": 129
+    },
+    {
+      "Id": 3,
+      "Name": "\u041C\u0443\u0440\u0430\u0445\u0430 #3",
+      "X": 365.65383425197064,
+      "Y": 241.84740401550692,
+      "Speed": 1.933775691565905,
+      "State": "Moving",
+      "Energy": 98.80000000000007,
+      "Health": 100,
+      "Age": 28.600000000000136,
+      "GatheredFood": 124,
+      "GatheredWood": 63,
+      "GatheredStone": 132,
+      "GatheredWater": 49
+    }
+  ],
+  "Resources": [
+    {
+      "Id": 2,
+      "Type": "Food",
+      "X": 535,
+      "Y": 458,
+      "Amount": 67
+    },
+    {
+      "Id": 3,
+      "Type": "Food",
+      "X": 679,
+      "Y": 241,
+      "Amount": 56
+    },
+    {
+      "Id": 4,
+      "Type": "Food",
+      "X": 668,
+      "Y": 104,
+      "Amount": 113
+    },
+    {
+      "Id": 6,
+      "Type": "Food",
+      "X": 110,
+      "Y": 342,
+      "Amount": 115
+    },
+    {
+      "Id": 7,
+      "Type": "Food",
+      "X": 669,
+      "Y": 349,
+      "Amount": 106
+    },
+    {
+      "Id": 8,
+      "Type": "Food",
+      "X": 174,
+      "Y": 483,
+      "Amount": 59
+    },
+    {
+      "Id": 10,
+      "Type": "Food",
+      "X": 665,
+      "Y": 387,
+      "Amount": 97
+    },
+    {
+      "Id": 11,
+      "Type": "Food",
+      "X": 201,
+      "Y": 471,
+      "Amount": 65
+    },
+    {
+      "Id": 12,
+      "Type": "Food",
+      "X": 679,
+      "Y": 393,
+      "Amount": 110
+    },
+    {
+      "Id": 13,
+      "Type": "Wood",
+      "X": 639,
+      "Y": 297,
+      "Amount": 26
+    },
+    {
+      "Id": 14,
+      "Type": "Wood",
+      "X": 139,
+      "Y": 490,
+      "Amount": 43
+    },
+    {
+      "Id": 15,
+      "Type": "Wood",
+      "X": 647,
+      "Y": 401,
+      "Amount": 121
+    },
+    {
+      "Id": 18,
+      "Type": "Wood",
+      "X": 273,
+      "Y": 122,
+      "Amount": 99
+    },
+    {
+      "Id": 21,
+      "Type": "Stone",
+      "X": 235,
+      "Y": 179,
+      "Amount": 91
+    },
+    {
+      "Id": 23,
+      "Type": "Water",
+      "X": 123,
+      "Y": 465,
+      "Amount": 66
+    },
+    {
+      "Id": 26,
+      "Type": "Stone",
+      "X": 603,
+      "Y": 442,
+      "Amount": 126
+    },
+    {
+      "Id": 28,
+      "Type": "Food",
+      "X": 203,
+      "Y": 407,
+      "Amount": 80
+    },
+    {
+      "Id": 30,
+      "Type": "Wood",
+      "X": 148,
+      "Y": 483,
+      "Amount": 48
+    },
+    {
+      "Id": 31,
+      "Type": "Food",
+      "X": 188,
+      "Y": 178,
+      "Amount": 74
+    },
+    {
+      "Id": 32,
+      "Type": "Stone",
+      "X": 231,
+      "Y": 414,
+      "Amount": 69
+    },
+    {
+      "Id": 33,
+      "Type": "Stone",
+      "X": 592,
+      "Y": 122,
+      "Amount": 90
+    },
+    {
+      "Id": 34,
+      "Type": "Water",
+      "X": 134,
+      "Y": 495,
+      "Amount": 58
+    },
+    {
+      "Id": 35,
+      "Type": "Wood",
+      "X": 182,
+      "Y": 191,
+      "Amount": 37
+    },
+    {
+      "Id": 36,
+      "Type": "Food",
+      "X": 113,
+      "Y": 384,
+      "Amount": 54
+    },
+    {
+      "Id": 37,
+      "Type": "Water",
+      "X": 183,
+      "Y": 200,
+      "Amount": 149
+    }
+  ],
+  "Statistics": {
+    "TotalFoodCollected": 344,
+    "TotalWoodCollected": 331,
+    "TotalStoneCollected": 372,
+    "TotalWaterCollected": 282,
+    "AntsBorn": 0,
+    "AntsDied": 0,
+    "NestExpansions": 0,
+    "PlayTime": "00:00:00",
+    "DaysSurvived": 1
+  }
+}

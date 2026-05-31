@@ -182,12 +182,12 @@ namespace AntFarmProject
         double obstacleWidth = 60, obstacleHeight = 60;
         string currentSaveFile = "savegame.json";
 
-
+       
         DispatcherTimer gameTimer, secondTimer, autoSaveTimer;
         Random random = new Random();
         StartSettings startSettings = new StartSettings();
 
-
+       
         readonly Brush BgDark = new SolidColorBrush(Color.FromRgb(15, 20, 25));
         readonly Brush BgPanel = new SolidColorBrush(Color.FromRgb(26, 31, 46));
         readonly Brush BgCard = new SolidColorBrush(Color.FromRgb(37, 43, 61));
@@ -510,7 +510,7 @@ namespace AntFarmProject
         /// <summary>
         /// Обробляє поточну поведінку мурахи (машину станів) та витрати її енергії.
         /// </summary>
-
+       
         void ProcessAnt(Ant a)
         {
             switch (a.State)
@@ -601,11 +601,8 @@ namespace AntFarmProject
         /// <summary>
         /// Відновлює здоров'я та енергію мурахи під час відпочинку в мурашнику.
         /// </summary>
-        void Rest(Ant a)
-        {
-            a.Energy = Math.Min(100, a.Energy + (unlockedResearch.Contains("Швидке відновлення") ? 3 : 2));
-            a.Health = Math.Min(a.MaxHealth, a.Health + 1); if (a.Energy >= 95) a.State = AntState.Idle;
-        }
+        void Rest(Ant a) { a.Energy = Math.Min(100, a.Energy + (unlockedResearch.Contains("Швидке відновлення") ? 3 : 2)); 
+        a.Health = Math.Min(a.MaxHealth, a.Health + 1); if (a.Energy >= 95) a.State = AntState.Idle; }
         /// <summary>
         /// Переводить мураху у стан смерті, знижує її прозорість на екрані та чергує видалення з Canvas через 5 секунд.
         /// </summary>
@@ -900,7 +897,7 @@ namespace AntFarmProject
                 if (unlockedResearch.Contains(r.Name))
                     r.Apply?.Invoke(this);
 
-
+         
             ants = new Ant[0]; resources = new ResourceNode[0]; obstacles = new Obstacle[0];
             GameCanvas.Children.Clear();
             GameCanvas.Children.Add(NestGrid);
@@ -910,11 +907,11 @@ namespace AntFarmProject
             foreach (var a in d.Ants)
                 RestoreAnt(a);
 
-
+            
             foreach (var r in d.Resources)
                 RestoreResource(r);
 
-
+          
             foreach (var o in d.Obstacles ?? new ObstacleSaveData[0])
                 RestoreObstacle(o);
 
@@ -1057,15 +1054,8 @@ namespace AntFarmProject
 
         void ShowSaveDialog(bool save)
         {
-            var w = new Window
-            {
-                Title = save ? "Зберегти" : "Завантажити",
-                Width = 380,
-                Height = 480,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = this,
-                Background = BgDark
-            };
+            var w = new Window { Title = save ? "Зберегти" : "Завантажити", Width = 380, Height = 480, 
+            WindowStartupLocation = WindowStartupLocation.CenterOwner, Owner = this, Background = BgDark };
             var p = new StackPanel { Margin = new Thickness(20) };
             p.Children.Add(new TextBlock { Text = w.Title, FontSize = 18, FontWeight = FontWeights.Bold, Foreground = Accent, Margin = new Thickness(0, 0, 0, 16) });
             var lb = new ListBox { Height = 260, Margin = new Thickness(0, 0, 0, 10), Background = BgCard, Foreground = TextMain, BorderBrush = BorderColor };
@@ -1074,39 +1064,18 @@ namespace AntFarmProject
             p.Children.Add(lb);
             if (save)
             {
-                var tb = new TextBox
-                {
-                    Text = "savegame",
-                    Margin = new Thickness(0, 0, 0, 10),
-                    Background = BgCard,
-                    Foreground = TextMain,
-                    BorderBrush = BorderColor,
-                    Padding = new Thickness(8)
-                };
+                var tb = new TextBox { Text = "savegame", Margin = new Thickness(0, 0, 0, 10), 
+                Background = BgCard, Foreground = TextMain, BorderBrush = BorderColor, Padding = new Thickness(8) };
                 p.Children.Insert(1, new TextBlock { Text = "Назва:", Margin = new Thickness(0, 5, 0, 3), Foreground = TextSub }); p.Children.Insert(2, tb);
-                var sb = new Button
-                {
-                    Content = "Зберегти",
-                    Padding = new Thickness(16, 8, 16, 8),
-                    Background = Accent,
-                    Foreground = Brushes.White,
-                    FontWeight = FontWeights.Bold,
-                    HorizontalAlignment = HorizontalAlignment.Right
-                };
+                var sb = new Button { Content = "Зберегти", Padding = new Thickness(16, 8, 16, 8), 
+                Background = Accent, Foreground = Brushes.White, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Right };
                 sb.Click += (_, __) => { SaveGame(tb.Text + ".json"); w.Close(); };
                 p.Children.Add(sb);
             }
             else
             {
-                var ldb = new Button
-                {
-                    Content = "Завантажити",
-                    Padding = new Thickness(16, 8, 16, 8),
-                    Background = Accent,
-                    Foreground = Brushes.White,
-                    FontWeight = FontWeights.Bold,
-                    HorizontalAlignment = HorizontalAlignment.Right
-                };
+                var ldb = new Button { Content = "Завантажити", Padding = new Thickness(16, 8, 16, 8), 
+                Background = Accent, Foreground = Brushes.White, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Right };
                 ldb.Click += (_, __) => { if (lb.SelectedItem != null) { LoadGame($"Data/{lb.SelectedItem}.json"); w.Close(); } };
                 p.Children.Add(ldb);
             }

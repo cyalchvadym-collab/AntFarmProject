@@ -1,0 +1,29 @@
+﻿<Window x:Class="AntFarmProject.ResearchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Дослідження" 
+        Height="400" Width="500"
+        Background="#2d3436"
+        WindowStartupLocation="CenterOwner">
+
+	<Border Style="{StaticResource GamePanel}" Margin="20">
+		<StackPanel>
+			<TextBlock Text="🔬 ДОСЛІДЖЕННЯ" Style="{StaticResource TitleText}" 
+                      HorizontalAlignment="Center" Margin="0,0,0,20"/>
+			<TextBlock Text="🔒 Швидкість мурах +20%" Foreground="#636e72" 
+                      FontSize="16" Margin="0,5"/>
+			<TextBlock Text="🔒 Міцність гнізда +50%" Foreground="#636e72" 
+                      FontSize="16" Margin="0,5"/>
+			<TextBlock Text="🔒 Автозбір ресурсів" Foreground="#636e72" 
+                      FontSize="16" Margin="0,5"/>
+			<TextBlock Text="🔒 Нічне бачення" Foreground="#636e72" 
+                      FontSize="16" Margin="0,5"/>
+
+			<TextBlock Text="(В розробці)" Foreground="#b2bec3" 
+                      HorizontalAlignment="Center" Margin="0,30"/>
+
+			<Button Content="❌ Закрити" Style="{StaticResource GameButton}" 
+                   Click="CloseBtn_Click" Margin="0,20,0,0"/>
+		</StackPanel>
+	</Border>
+</Window>
