@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -182,12 +182,12 @@ namespace AntFarmProject
         double obstacleWidth = 60, obstacleHeight = 60;
         string currentSaveFile = "savegame.json";
 
-       
+
         DispatcherTimer gameTimer, secondTimer, autoSaveTimer;
         Random random = new Random();
         StartSettings startSettings = new StartSettings();
 
-       
+
         readonly Brush BgDark = new SolidColorBrush(Color.FromRgb(15, 20, 25));
         readonly Brush BgPanel = new SolidColorBrush(Color.FromRgb(26, 31, 46));
         readonly Brush BgCard = new SolidColorBrush(Color.FromRgb(37, 43, 61));
@@ -235,7 +235,7 @@ namespace AntFarmProject
             researches = new Research[]
             {
                 new Research { Name = "Швидкість +20%", Description = "Швидкість мурах", CostFood = 50, CostWood = 30, CostStone = 10, Apply = w => { foreach (var a in w.ants) a.BaseSpeed *= 1.2; } },
-                new Research { Name = "Міцність +50%", Description = "Здоров'я мурах", CostFood = 30, CostWood = 50, CostStone = 20, Apply = w => { foreach (var a in w.ants) a.MaxHealth = 150; } },
+                new Research { Name = "Міцність +50%", Description = "Здоров’я мурах", CostFood = 30, CostWood = 50, CostStone = 20, Apply = w => { foreach (var a in w.ants) a.MaxHealth = 150; } },
                 new Research { Name = "Автозбір", Description = "Швидше збирають", CostFood = 100, CostWood = 50, CostStone = 30 },
                 new Research { Name = "Нічне бачення", Description = "Не сповільнюються вночі", CostFood = 40, CostWood = 20, CostStone = 40 },
                 new Research { Name = "Подвійна місткість", Description = "Удвічі більше ресурсів", CostFood = 80, CostWood = 60, CostStone = 20 },
@@ -356,7 +356,25 @@ namespace AntFarmProject
             if (++currentMinute >= 60) { currentMinute = 0; if (++currentHour >= 24) { currentHour = 0; currentDay++; statistics.DaysSurvived = currentDay; ChangeWeather(); } }
             int fc = Math.Max(1, AliveAnts() / 3), wc = Math.Max(1, AliveAnts() / 4);
             food = Math.Max(0, food - fc); water = Math.Max(0, water - wc);
-            if (food == 0) foreach (var a in ants.Where(a => a.State != AntState.Dead).Take(1)) { a.Health -= 10; if (a.Health <= 0) KillAnt(a, "голод"); }
+
+            if (food == 0)
+            {
+                foreach (var a in ants.Where(a => a.State != AntState.Dead))
+                {
+                    a.Health -= 10; // 
+                    if (a.Health <= 10) KillAnt(a, "голод");
+                }
+            }
+
+            if (water == 0)
+            {
+                foreach (var a in ants.Where(a => a.State != AntState.Dead))
+                {
+                    a.Health -= 10;
+                    if (a.Health <= 10) KillAnt(a, "спрага");
+                }
+            }
+
             foreach (var a in ants.Where(a => a.State != AntState.Dead)) { a.Age += 0.1; if (a.Age > 100 && random.Next(1000) < 5) KillAnt(a, "старість"); }
             if (startSettings.InitialFood > 0 && random.Next(100) < 5) { int b = random.Next(10, 30); food += b; AddLog($"Випадкова знахідка: +{b} їжі!", Colors.LightGreen); }
             UpdateUI();
@@ -385,18 +403,40 @@ namespace AntFarmProject
         /// </summary>
         void GenerateResources()
         {
-            if (startSettings.InitialFood == 0) return;
             int id = 1;
-            int fc = Math.Min(20, startSettings.InitialFood / 10 + (currentWeather == WeatherType.Sunny ? 2 : 0));
-            int wc = Math.Min(15, startSettings.InitialWood / 10);
-            int sc = Math.Min(10, startSettings.InitialStone / 10);
-            int wtc = Math.Min(12, startSettings.InitialWater / 10 + (currentWeather == WeatherType.Rainy ? 2 : 0));
-            for (int i = 0; i < fc; i++) CreateResource(id++, ResourceType.Food, "\uD83C\uDF42", "#00d4aa", random.Next(20, 50));
-            for (int i = 0; i < wc; i++) CreateResource(id++, ResourceType.Wood, "\uD83E\uDEB5", "#ff7675", random.Next(20, 50));
-            for (int i = 0; i < sc; i++) CreateResource(id++, ResourceType.Stone, "\uD83E\uDEA8", "#b2bec3", random.Next(20, 50));
-            for (int i = 0; i < wtc; i++) CreateResource(id++, ResourceType.Water, "\uD83D\uDCA7", "#74b9ff", random.Next(20, 50));
-        }
 
+           
+            if (startSettings.InitialFood > 0)
+            {
+                int fc = Math.Min(20, startSettings.InitialFood / 10 + (currentWeather == WeatherType.Sunny ? 2 : 0));
+                for (int i = 0; i < fc; i++)
+                    CreateResource(id++, ResourceType.Food, "\uD83C\uDF42", "#00d4aa", random.Next(20, 50));
+            }
+
+           
+            if (startSettings.InitialWood > 0)
+            {
+                int wc = Math.Min(15, startSettings.InitialWood / 10);
+                for (int i = 0; i < wc; i++)
+                    CreateResource(id++, ResourceType.Wood, "\uD83E\uDEB5", "#ff7675", random.Next(20, 50));
+            }
+
+            
+            if (startSettings.InitialStone > 0)
+            {
+                int sc = Math.Min(10, startSettings.InitialStone / 10);
+                for (int i = 0; i < sc; i++)
+                    CreateResource(id++, ResourceType.Stone, "\uD83E\uDEA8", "#b2bec3", random.Next(20, 50));
+            }
+
+          
+            if (startSettings.InitialWater > 0)
+            {
+                int wtc = Math.Min(12, startSettings.InitialWater / 10 + (currentWeather == WeatherType.Rainy ? 2 : 0));
+                for (int i = 0; i < wtc; i++)
+                    CreateResource(id++, ResourceType.Water, "\uD83D\uDCA7", "#74b9ff", random.Next(20, 50));
+            }
+        }
         /// <summary>
         /// Створює візуальний круглий елемент ресурсу з емодзі та додає його на Canvas за випадковими координатами, уникаючи накладання на мурашник чи перешкоди.
         /// </summary>
@@ -466,7 +506,7 @@ namespace AntFarmProject
         /// <summary>
         /// Створює візуальне відображення (рендеринг) мурахи за допомогою WPF елементів Canvas, Ellipse та Line.
         /// </summary>
-        /// <returns>Об'єкт Canvas, що містить усі деталі тіла та лапок мурахи.</returns>
+        /// <returns>Об’єкт Canvas, що містить усі деталі тіла та лапок мурахи.</returns>
         Canvas CreateAntVisual()
         {
             var c = new Canvas { Width = 32, Height = 32 };
@@ -510,7 +550,7 @@ namespace AntFarmProject
         /// <summary>
         /// Обробляє поточну поведінку мурахи (машину станів) та витрати її енергії.
         /// </summary>
-       
+
         void ProcessAnt(Ant a)
         {
             switch (a.State)
@@ -580,7 +620,6 @@ namespace AntFarmProject
         /// <summary>
         /// Керує поверненням мурахи до гнізда для розвантаження зібраних ресурсів.
         /// </summary>
-        /// <param name="a">Мураха, яка повертається до мурашника.</param>
         void Return(Ant a)
         {
             double dx = a.TargetX - a.X, dy = a.TargetY - a.Y, d = Math.Sqrt(dx * dx + dy * dy);
@@ -599,10 +638,13 @@ namespace AntFarmProject
         }
 
         /// <summary>
-        /// Відновлює здоров'я та енергію мурахи під час відпочинку в мурашнику.
+        /// Відновлює здоров’я та енергію мурахи під час відпочинку в мурашнику.
         /// </summary>
-        void Rest(Ant a) { a.Energy = Math.Min(100, a.Energy + (unlockedResearch.Contains("Швидке відновлення") ? 3 : 2)); 
-        a.Health = Math.Min(a.MaxHealth, a.Health + 1); if (a.Energy >= 95) a.State = AntState.Idle; }
+        void Rest(Ant a)
+        {
+            a.Energy = Math.Min(100, a.Energy + (unlockedResearch.Contains("Швидке відновлення") ? 3 : 2));
+            a.Health = Math.Min(a.MaxHealth, a.Health + 1); if (a.Energy >= 95) a.State = AntState.Idle;
+        }
         /// <summary>
         /// Переводить мураху у стан смерті, знижує її прозорість на екрані та чергує видалення з Canvas через 5 секунд.
         /// </summary>
@@ -618,7 +660,6 @@ namespace AntFarmProject
         /// <summary>
         /// Оновлює координати Canvas та плавно повертає кут нахилу текстури мурахи у напрямку її руху.
         /// </summary>
-        /// <param name="a">Мураха, чий візуальний стан оновлюється.</param>
         void UpdateAntVisual(Ant a)
         {
             if (a.Visual == null) return;
@@ -679,7 +720,7 @@ namespace AntFarmProject
             var w = new Window { Title = a.Name, Width = 320, Height = 380, WindowStartupLocation = WindowStartupLocation.CenterOwner, Owner = this, Background = BgDark };
             var p = new StackPanel { Margin = new Thickness(20) };
             p.Children.Add(new TextBlock { Text = $"{a.Name}", FontSize = 20, FontWeight = FontWeights.Bold, Foreground = Accent, Margin = new Thickness(0, 0, 0, 16) });
-            p.Children.Add(new TextBlock { Text = $"Стан: {a.State}\nЕнергія: {a.Energy:F1}%\nЗдоров'я: {a.Health:F1}%\nВік: {a.Age:F1}\nШвидкість: {a.Speed:F2}\n\nЗібрано:\nЇжа {a.GatheredFood}  Деревина {a.GatheredWood}\nКамінь {a.GatheredStone}  Вода {a.GatheredWater}", FontSize = 13, TextWrapping = TextWrapping.Wrap, Foreground = TextMain, LineHeight = 22 });
+            p.Children.Add(new TextBlock { Text = $"Стан: {a.State}\nЕнергія: {a.Energy:F1}%\nЗдоров’я: {a.Health:F1}%\nВік: {a.Age:F1}\nШвидкість: {a.Speed:F2}\n\nЗібрано:\nЇжа {a.GatheredFood}  Деревина {a.GatheredWood}\nКамінь {a.GatheredStone}  Вода {a.GatheredWater}", FontSize = 13, TextWrapping = TextWrapping.Wrap, Foreground = TextMain, LineHeight = 22 });
             w.Content = new ScrollViewer { Content = p, Background = BgDark }; w.ShowDialog();
         }
 
@@ -897,7 +938,7 @@ namespace AntFarmProject
                 if (unlockedResearch.Contains(r.Name))
                     r.Apply?.Invoke(this);
 
-         
+
             ants = new Ant[0]; resources = new ResourceNode[0]; obstacles = new Obstacle[0];
             GameCanvas.Children.Clear();
             GameCanvas.Children.Add(NestGrid);
@@ -907,11 +948,11 @@ namespace AntFarmProject
             foreach (var a in d.Ants)
                 RestoreAnt(a);
 
-            
+
             foreach (var r in d.Resources)
                 RestoreResource(r);
 
-          
+
             foreach (var o in d.Obstacles ?? new ObstacleSaveData[0])
                 RestoreObstacle(o);
 
@@ -1054,8 +1095,15 @@ namespace AntFarmProject
 
         void ShowSaveDialog(bool save)
         {
-            var w = new Window { Title = save ? "Зберегти" : "Завантажити", Width = 380, Height = 480, 
-            WindowStartupLocation = WindowStartupLocation.CenterOwner, Owner = this, Background = BgDark };
+            var w = new Window
+            {
+                Title = save ? "Зберегти" : "Завантажити",
+                Width = 380,
+                Height = 480,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this,
+                Background = BgDark
+            };
             var p = new StackPanel { Margin = new Thickness(20) };
             p.Children.Add(new TextBlock { Text = w.Title, FontSize = 18, FontWeight = FontWeights.Bold, Foreground = Accent, Margin = new Thickness(0, 0, 0, 16) });
             var lb = new ListBox { Height = 260, Margin = new Thickness(0, 0, 0, 10), Background = BgCard, Foreground = TextMain, BorderBrush = BorderColor };
@@ -1064,18 +1112,39 @@ namespace AntFarmProject
             p.Children.Add(lb);
             if (save)
             {
-                var tb = new TextBox { Text = "savegame", Margin = new Thickness(0, 0, 0, 10), 
-                Background = BgCard, Foreground = TextMain, BorderBrush = BorderColor, Padding = new Thickness(8) };
+                var tb = new TextBox
+                {
+                    Text = "savegame",
+                    Margin = new Thickness(0, 0, 0, 10),
+                    Background = BgCard,
+                    Foreground = TextMain,
+                    BorderBrush = BorderColor,
+                    Padding = new Thickness(8)
+                };
                 p.Children.Insert(1, new TextBlock { Text = "Назва:", Margin = new Thickness(0, 5, 0, 3), Foreground = TextSub }); p.Children.Insert(2, tb);
-                var sb = new Button { Content = "Зберегти", Padding = new Thickness(16, 8, 16, 8), 
-                Background = Accent, Foreground = Brushes.White, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Right };
+                var sb = new Button
+                {
+                    Content = "Зберегти",
+                    Padding = new Thickness(16, 8, 16, 8),
+                    Background = Accent,
+                    Foreground = Brushes.White,
+                    FontWeight = FontWeights.Bold,
+                    HorizontalAlignment = HorizontalAlignment.Right
+                };
                 sb.Click += (_, __) => { SaveGame(tb.Text + ".json"); w.Close(); };
                 p.Children.Add(sb);
             }
             else
             {
-                var ldb = new Button { Content = "Завантажити", Padding = new Thickness(16, 8, 16, 8), 
-                Background = Accent, Foreground = Brushes.White, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Right };
+                var ldb = new Button
+                {
+                    Content = "Завантажити",
+                    Padding = new Thickness(16, 8, 16, 8),
+                    Background = Accent,
+                    Foreground = Brushes.White,
+                    FontWeight = FontWeights.Bold,
+                    HorizontalAlignment = HorizontalAlignment.Right
+                };
                 ldb.Click += (_, __) => { if (lb.SelectedItem != null) { LoadGame($"Data/{lb.SelectedItem}.json"); w.Close(); } };
                 p.Children.Add(ldb);
             }
